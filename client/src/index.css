@@ -1,0 +1,35 @@
+* {
+  margin: 0%;
+  padding: 0%;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+.wrapper {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: -1;
+  background: linear-gradient(
+    45deg,
+    #f17c588f,
+    #e945848f,
+    #24aadb8f,
+    #27dbb18f,
+    #ffdc188f,
+    #ff37068f
+  );
+  background-size: 600% 100%;
+  animation: gradient 60s linear infinite;
+  animation-direction: alternate;
+}
+@keyframes gradient {
+  0% {
+    background-position: 0%;
+  }
+  100% {
+    background-position: 100%;
+  }
+}
