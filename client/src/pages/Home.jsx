@@ -1,13 +1,11 @@
-// import AppLayout from "../components/AppLayout";
 import AppLayout from "../components/AppLayout";
-import Navbar from "../components/Navbar";
-import Sidebar from "../components/Sidebar";
+import CardContainer from "../components/CardContainer";
 
 const Home = () => {
   return (
     <>
       <AppLayout>
-        <h1>Testing</h1>
+        <CardContainer />
       </AppLayout>
     </>
   );
