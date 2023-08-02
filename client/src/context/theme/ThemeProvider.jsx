@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import {
   CssBaseline,
   ThemeProvider,
@@ -24,6 +25,10 @@ const ThemeProviderContext = ({ children }) => {
       </ThemeProvider>
     </ThemeContext.Provider>
   );
+};
+
+ThemeProviderContext.propTypes = {
+  children: PropTypes.any,
 };
 
 export default ThemeProviderContext;

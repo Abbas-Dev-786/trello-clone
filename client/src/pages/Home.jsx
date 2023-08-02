@@ -1,13 +1,14 @@
 import AppLayout from "../components/AppLayout";
-import CardContainer from "../components/CardContainer";
+import Board from "../components/Board";
+import TaskProvider from "../context/task/TaskProvider";
 
 const Home = () => {
   return (
-    <>
-      <AppLayout>
-        <CardContainer />
-      </AppLayout>
-    </>
+    <AppLayout>
+      <TaskProvider>
+        <Board />
+      </TaskProvider>
+    </AppLayout>
   );
 };
 
