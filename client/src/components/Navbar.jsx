@@ -14,12 +14,16 @@ const Navbar = () => {
       sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, color: "white" }}
     >
       {/* <Container maxWidth="xl"> */}
-      <Toolbar>
+      <Toolbar
+        sx={{
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
         <IconButton
           size="large"
           edge="start"
           color="inherit"
-          aria-label="open drawer"
           // sx={{ mr: 1 }}
         >
           <BubbleChartIcon />
@@ -36,13 +40,6 @@ const Navbar = () => {
           Trello
         </Typography>
 
-        <IconButton
-          color="inherit"
-          onClick={() => setMode(mode === "light" ? "dark" : "light")}
-        >
-          {mode === "light" ? <DarkMode /> : <LightMode />}
-        </IconButton>
-
         <Search>
           <SearchIconWrapper>
             <SearchIcon />
@@ -52,6 +49,13 @@ const Navbar = () => {
             inputProps={{ "aria-label": "search" }}
           />
         </Search>
+
+        <IconButton
+          color="inherit"
+          onClick={() => setMode(mode === "light" ? "dark" : "light")}
+        >
+          {mode === "light" ? <DarkMode /> : <LightMode />}
+        </IconButton>
       </Toolbar>
       {/* </Container> */}
     </AppBar>

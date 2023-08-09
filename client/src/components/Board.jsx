@@ -90,7 +90,6 @@ const Board = () => {
                   display="flex"
                   alignItems="center"
                   justifyContent="flex-start"
-                  // gap={10}
                   pt={5}
                   px={5}
                   ref={provided.innerRef}

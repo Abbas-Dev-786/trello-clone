@@ -9,8 +9,8 @@ import {
   TextField,
   IconButton,
   Box,
+  Chip,
 } from "@mui/material";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import CloseIcon from "@mui/icons-material/Close";
 import FlexBetween from "./FlexBetween";
 import TaskCard from "./TaskCard";
@@ -41,9 +41,7 @@ const Column = ({ title, columnId, data, type }) => {
             <Typography variant="body1" color="text.primary" gutterBottom>
               {title}
             </Typography>
-            <IconButton>
-              <MoreVertIcon />
-            </IconButton>
+            <Chip label={data.length} size="small" />
           </FlexBetween>
         </CardContent>
 
