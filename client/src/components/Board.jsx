@@ -53,7 +53,7 @@ const Board = () => {
     )
       return;
 
-    if (type === "group") {
+    if (type === "column") {
       const reorderedColumns = [...columns];
 
       const sourceIndex = source.index;
@@ -72,6 +72,7 @@ const Board = () => {
 
     const [removedColumn] = reorderedTasks.splice(sourceIndex, 1);
     reorderedTasks.splice(destinationIndex, 0, removedColumn);
+    setTasks(reorderedTasks);
 
     const taskSwapped = reorderedTasks.find((task) => task.id === draggableId);
     taskSwapped.type = columns[+destination.droppableId].type;
@@ -82,28 +83,23 @@ const Board = () => {
     <DragDropContext onDragEnd={handleDragEnd}>
       <div className="wrapper">
         <Container maxWidth="xl">
-          <Droppable
-            droppableId="ROOT"
-            type="group"
-            mode="standard"
-            direction="horizontal"
-          >
+          <Droppable droppableId="board" type="column" direction="horizontal">
             {(provided) => (
               <>
                 <Box
                   display="flex"
                   alignItems="center"
                   justifyContent="flex-start"
-                  gap={10}
+                  // gap={10}
                   pt={5}
                   px={5}
                   ref={provided.innerRef}
                   {...provided.droppableProps}
                 >
-                  {columns.map((data) => (
+                  {columns.map((data, i) => (
                     <Draggable
                       draggableId={`${data.columnId}`}
-                      index={data.columnId}
+                      index={i}
                       key={data.columnId}
                     >
                       {(provided) => (

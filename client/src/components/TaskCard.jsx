@@ -44,7 +44,7 @@ const TaskCard = (props) => {
                   onChange={(e) => setUpdatedTask(e.target.value)}
                 />
               ) : (
-                <Typography variant="body2" display="block" noWrap={true}>
+                <Typography variant="body2">
                   {props.id} {task}
                 </Typography>
               )}
