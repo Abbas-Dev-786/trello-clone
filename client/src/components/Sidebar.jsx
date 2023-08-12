@@ -11,11 +11,11 @@ import {
   ListItemText,
   Divider,
 } from "@mui/material";
+import { useTheme } from "@emotion/react";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
-import { useTheme } from "@emotion/react";
 
 const Sidebar = () => {
   const theme = useTheme();

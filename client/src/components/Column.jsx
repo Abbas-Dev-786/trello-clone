@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
 import {
   Card,
   CardContent,
@@ -12,22 +13,36 @@ import {
   Chip,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import { Droppable } from "react-beautiful-dnd";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
 import FlexBetween from "./FlexBetween";
 import TaskCard from "./TaskCard";
-import useTaskProvider from "../context/task/useTaskProvider";
-import { Droppable } from "react-beautiful-dnd";
+
+import { addTask } from "../api";
 
 const Column = ({ title, columnId, data, type }) => {
-  const { setTasks: setData, generateId } = useTaskProvider();
   const [showForm, setShowForm] = useState(false);
   const [task, setTask] = useState("");
+
+  const queryClient = useQueryClient();
+  const { mutate, error } = useMutation({
+    mutationFn: addTask,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+    },
+  });
+
+  useEffect(() => {
+    if (error) {
+      alert(error);
+    }
+  }, [error]);
 
   const handleSubmitTask = (e) => {
     e.preventDefault();
 
-    const obj = { type, task, id: generateId() };
-
-    setData((prev) => [...prev, obj]);
+    mutate({ type, task, createdBy: "64cba118df5fdbf069d624dd" });
 
     setTask("");
     setShowForm(false);
@@ -38,23 +53,32 @@ const Column = ({ title, columnId, data, type }) => {
       <Card sx={{ minWidth: 320 }}>
         <CardContent>
           <FlexBetween>
-            <Typography variant="body1" color="text.primary" gutterBottom>
+            <Typography
+              variant="body1"
+              color="text.primary"
+              textTransform="capitalize"
+              gutterBottom
+            >
               {title}
             </Typography>
-            <Chip label={data.length} size="small" />
+            <Chip label={data?.length ?? 0} size="small" />
           </FlexBetween>
         </CardContent>
 
         <Droppable droppableId={`${columnId}`}>
           {(provided) => (
-            <CardContent ref={provided.innerRef} {...provided.droppableProps}>
+            <CardContent
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+              sx={{ maxHeight: "60vh", overflowY: "auto" }}
+            >
               <FlexBetween flexDirection="column" mb={2}>
-                {data.map((task, i) => (
+                {data?.map((task, i) => (
                   <TaskCard
-                    key={task.id}
+                    key={task._id}
                     task={task.task}
                     index={i}
-                    id={task.id}
+                    id={task._id}
                   />
                 ))}
                 {provided.placeholder}

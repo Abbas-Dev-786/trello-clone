@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import { createContext, useMemo, useState } from "react";
 import {
   CssBaseline,
   ThemeProvider,
@@ -6,7 +7,6 @@ import {
   responsiveFontSizes,
   useMediaQuery,
 } from "@mui/material";
-import { createContext, useMemo, useState } from "react";
 
 export const ThemeContext = createContext();
 
@@ -20,7 +20,7 @@ const ThemeProviderContext = ({ children }) => {
   return (
     <ThemeContext.Provider value={{ mode, setMode }}>
       <ThemeProvider theme={responsiveFontSizes(theme)}>
-        <CssBaseline />
+        <CssBaseline enableColorScheme />
         {children}
       </ThemeProvider>
     </ThemeContext.Provider>

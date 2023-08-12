@@ -3,7 +3,7 @@
   padding: 0%;
 }
 
-html,
+/* html, */
 body {
   overflow-x: hidden;
 }
@@ -25,7 +25,8 @@ body {
   background-size: 600% 100%;
   animation: gradient 60s linear infinite;
   animation-direction: alternate;
-  overflow-y: scroll;
+  /* overflow-x: auto;
+  overflow-y: hidden;*/
 }
 @keyframes gradient {
   0% {

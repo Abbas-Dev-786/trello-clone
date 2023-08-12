@@ -1,8 +1,8 @@
 import { AppBar, Toolbar, IconButton, Typography } from "@mui/material";
 import BubbleChartIcon from "@mui/icons-material/BubbleChart";
 import SearchIcon from "@mui/icons-material/Search";
-import { Search, SearchIconWrapper, StyledInputBase } from "./Search";
 import { DarkMode, LightMode } from "@mui/icons-material";
+import { Search, SearchIconWrapper, StyledInputBase } from "./Search";
 import { useToggleMode } from "../context/theme/useToggleMode";
 
 const Navbar = () => {

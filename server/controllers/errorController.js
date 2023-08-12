@@ -1,5 +1,7 @@
+const AppError = require("../utils/AppError");
+
 const sendDevError = (err, res) => {
-  return res.status(err.status).json({
+  return res.status(err.statusCode).json({
     status: err.status,
     name: err.name,
     code: err.code,
@@ -11,7 +13,7 @@ const sendDevError = (err, res) => {
 
 const sendProdError = (err, res) => {
   if (err.isOperational) {
-    return res.status(err.status).json({
+    return res.status(err.statusCode).json({
       status: err.status,
       message: err.message,
     });
@@ -25,6 +27,11 @@ const sendProdError = (err, res) => {
   }
 };
 
+const handleValidationError = (err) => {
+  const errors = Object.values(err.errors).map((e) => e.message);
+  return new AppError(`Something is missing => ${errors.join(", ")}.`, 400);
+};
+
 module.exports = function (err, req, res, next) {
   err.statusCode ||= 400;
   err.status ||= "fail";
@@ -33,6 +40,12 @@ module.exports = function (err, req, res, next) {
     sendDevError(err, res);
   } else if (process.env.NODE_ENV === "prod") {
     let error = Object.assign(err);
+
+    // if(err.code === 11000) error =
+    if (err.name === "ValidationError") error = handleValidationError(err);
+    // if(err.name === "") error =
+    // if(err.name === "") error =
+    // if(err.name === "") error =
 
     sendProdError(error, res);
   }

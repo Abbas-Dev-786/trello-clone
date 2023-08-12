@@ -1,16 +1,28 @@
 import PropTypes from "prop-types";
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getAllTasks } from "../../api";
 
 export const TaskContext = createContext();
 
 const TaskProvider = ({ children }) => {
   // const [tasks, setTasks] = useState([{ type: "todo", tasks: [] }, {}, {}]);
+  const { data, error } = useQuery(["tasks"], getAllTasks);
+
   const [tasks, setTasks] = useState([]);
 
-  const generateId = () => `task-${Date.now()}`;
+  useEffect(() => {
+    if (error) {
+      alert(error);
+    }
+  }, [error]);
+
+  useEffect(() => {
+    setTasks(data?.data?.tasks);
+  }, [data]);
 
   return (
-    <TaskContext.Provider value={{ tasks, setTasks, generateId }}>
+    <TaskContext.Provider value={{ tasks, setTasks }}>
       {children}
     </TaskContext.Provider>
   );

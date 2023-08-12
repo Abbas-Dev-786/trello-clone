@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
 import {
   Card,
   CardActions,
@@ -8,32 +9,65 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Check, Close, Edit } from "@mui/icons-material";
+import { Check, Close, Delete, Edit } from "@mui/icons-material";
 import { Draggable } from "react-beautiful-dnd";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
 import FlexBetween from "./FlexBetween";
+import { EditTaskTitle, deleteTask } from "../api";
 
 const TaskCard = (props) => {
   const [showEdit, setShowEdit] = useState(false);
   const [task, setTask] = useState(props.task);
   const [updatedTask, setUpdatedTask] = useState("");
 
+  const queryClient = useQueryClient();
+  const { mutate: editTask, error: editTaskError } = useMutation({
+    mutationFn: EditTaskTitle,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+    },
+  });
+
+  const { mutate: removeTask, error: deleteTaskError } = useMutation({
+    mutationFn: deleteTask,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+    },
+  });
+
   const handleUpdateTask = (e) => {
     e.preventDefault();
+
+    editTask({ id: props.id, task: updatedTask });
 
     setTask(updatedTask);
     setShowEdit(false);
   };
 
+  const handleDeleteTask = (e) => {
+    e.preventDefault();
+
+    removeTask(props.id);
+  };
+
+  useEffect(() => {
+    const error = editTaskError || deleteTaskError;
+    if (error) {
+      alert(error);
+    }
+  }, [editTaskError, deleteTaskError]);
+
   return (
     <Draggable draggableId={props.id} index={props.index}>
       {(provided) => (
         <Card
-          sx={{ width: 300 }}
+          sx={{ width: 300, mb: 2 }}
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
         >
-          <FlexBetween>
+          <FlexBetween flexWrap="wrap">
             <CardContent>
               {showEdit ? (
                 <TextField
@@ -44,11 +78,10 @@ const TaskCard = (props) => {
                   onChange={(e) => setUpdatedTask(e.target.value)}
                 />
               ) : (
-                <Typography variant="body2">
-                  {props.id} {task}
+                <Typography variant="body2" noWrap flexWrap="wrap">
+                  {task}
                 </Typography>
               )}
-              {/* <Typography variant="caption">Created by Author</Typography> */}
             </CardContent>
             <CardActions>
               {showEdit && (
@@ -65,6 +98,9 @@ const TaskCard = (props) => {
                 ) : (
                   <Close fontSize="small" />
                 )}
+              </IconButton>
+              <IconButton size="small" onClick={handleDeleteTask}>
+                <Delete fontSize="small" />
               </IconButton>
             </CardActions>
           </FlexBetween>

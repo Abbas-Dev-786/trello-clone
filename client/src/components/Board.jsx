@@ -1,14 +1,28 @@
+import { useEffect, useState, useMemo } from "react";
+
 import { Box, Container } from "@mui/material";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+
 import Column from "./Column";
 import useTaskProvider from "../context/task/useTaskProvider";
-import { useEffect, useMemo, useState } from "react";
+import { editTaskType } from "../api";
 
 const Board = () => {
+  const [columns, setColumns] = useState();
   const { tasks, setTasks } = useTaskProvider();
-  const todos = tasks.filter((task) => task.type === "todo");
-  const progress = tasks.filter((task) => task.type === "progress");
-  const completed = tasks.filter((task) => task.type === "completed");
+
+  const queryClient = useQueryClient();
+  const { mutate, error } = useMutation({
+    mutationFn: editTaskType,
+    onSuccess: (data) => {
+      queryClient.setQueryData(["tasks"], data);
+    },
+  });
+
+  const todos = tasks?.filter((task) => task.type === "todo");
+  const progress = tasks?.filter((task) => task.type === "progress");
+  const completed = tasks?.filter((task) => task.type === "completed");
 
   const initialColumns = useMemo(
     () => [
@@ -34,13 +48,17 @@ const Board = () => {
     [todos, progress, completed]
   );
 
-  const [columns, setColumns] = useState(initialColumns);
-
   useEffect(() => {
     setColumns(initialColumns);
 
     //eslint-disable-next-line
   }, [tasks]);
+
+  useEffect(() => {
+    if (error) {
+      alert(error);
+    }
+  }, [error]);
 
   const handleDragEnd = (results) => {
     const { source, destination, type, draggableId } = results;
@@ -65,18 +83,31 @@ const Board = () => {
       return setColumns(reorderedColumns);
     }
 
-    const reorderedTasks = [...tasks];
+    //Reorder Task functionality
+    if (source.droppableId === destination.droppableId) {
+      const reorderedTasks = [...tasks];
 
-    const sourceIndex = source.index;
-    const destinationIndex = destination.index;
+      const sourceIndex = source.index;
+      const destinationIndex = destination.index;
 
-    const [removedColumn] = reorderedTasks.splice(sourceIndex, 1);
-    reorderedTasks.splice(destinationIndex, 0, removedColumn);
-    setTasks(reorderedTasks);
+      console.log(source, destination);
 
-    const taskSwapped = reorderedTasks.find((task) => task.id === draggableId);
-    taskSwapped.type = columns[+destination.droppableId].type;
-    setTasks(reorderedTasks);
+      const [removedColumn] = reorderedTasks.splice(sourceIndex, 1);
+      reorderedTasks.splice(destinationIndex, 0, removedColumn);
+      setTasks(reorderedTasks);
+    }
+
+    //Swipe task functionality
+    if (source.droppableId !== destination.draggableId) {
+      const reorderedTasks = [...tasks];
+      const taskSwapped = reorderedTasks.find(
+        (task) => task._id === draggableId
+      );
+      taskSwapped.type = columns[+destination.droppableId].type;
+
+      setTasks(reorderedTasks);
+      mutate({ id: taskSwapped._id, type: taskSwapped.type });
+    }
   };
 
   return (
@@ -95,7 +126,7 @@ const Board = () => {
                   ref={provided.innerRef}
                   {...provided.droppableProps}
                 >
-                  {columns.map((data, i) => (
+                  {columns?.map((data, i) => (
                     <Draggable
                       draggableId={`${data.columnId}`}
                       index={i}
